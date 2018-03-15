@@ -104,9 +104,9 @@ hrtype = new gql.GraphQLObjectType({
             },
             name: {
                 type: gql.GraphQLString,
-            },
-            surname: {
-                type: gql.GraphQLString,
+                resolve(person) {
+                    return person.name.concat(" ", person.surname);
+                }
             },
             department: {
                 type: gql.GraphQLString,
@@ -114,11 +114,33 @@ hrtype = new gql.GraphQLObjectType({
             official_mail: {
                 type: gql.GraphQLString,
             },
-            devices: {
-                type: DevicesType,
+            devices_number: {
+                type: new gql.GraphQLNonNull(gql.GraphQLString),
+                resolve(person) {
+                    return db._query(aqlQuery`
+                        FOR person IN ${hrSystem}
+                        FILTER person._key == ${person._key}
+                        LET phonesNumber = person.devices.phone[* FILTER 
+                           CURRENT.end_date == null
+                        ]
+                        
+                        LET computerNumber = person.devices.computer[* FILTER 
+                           CURRENT.end_date == null
+                        ]
+                        LET number = COUNT(phonesNumber)+COUNT(computerNumber)
+                        RETURN number
+                  `).toArray();
+                }
             },
             roles: {
-                type: new gql.GraphQLList(RolesType)
+                type: new gql.GraphQLNonNull(gql.GraphQLString),
+                resolve(person) {
+                    return db._query(aqlQuery`
+                        FOR person IN ${hrSystem}
+                        FILTER person._key == ${person._key}
+                        RETURN person.roles[*].title
+                  `).toArray();
+                }
             }
         };
     }
