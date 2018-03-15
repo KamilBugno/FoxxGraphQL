@@ -17,12 +17,12 @@ const queryHRType = new gql.GraphQLObjectType({
                 args: {
                     id: {
                         description: 'id of the person',
-                        type: new gql.GraphQLNonNull(gql.GraphQLString)
+                        type: new gql.GraphQLNonNull(gql.GraphQLInt)
                     }
                 },
                 resolve(root, args) {
                     return hrSystem.firstExample({
-                        _key: args.id
+                        _key: args.id.toString()
                     });
                 }
             }
@@ -97,9 +97,9 @@ hrtype = new gql.GraphQLObjectType({
     fields() {
         return {
             id: {
-                type: new gql.GraphQLNonNull(gql.GraphQLString),
+                type: new gql.GraphQLNonNull(gql.GraphQLInt),
                 resolve(hrSystem) {
-                    return hrSystem._key;
+                    return parseInt(hrSystem._key);
                 }
             },
             name: {
@@ -111,8 +111,11 @@ hrtype = new gql.GraphQLObjectType({
             department: {
                 type: gql.GraphQLString,
             },
-            official_mail: {
+            mail: {
                 type: gql.GraphQLString,
+                resolve(person) {
+                    return person.official_mail;
+                }
             },
             devices_number: {
                 type: new gql.GraphQLNonNull(gql.GraphQLString),
