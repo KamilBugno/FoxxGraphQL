@@ -30,68 +30,6 @@ const queryHRType = new gql.GraphQLObjectType({
     }
 });
 
-const DevicesType = new gql.GraphQLObjectType({
-    name: 'DevicesType',
-    fields() {
-        return {
-            computer: {
-                type: new gql.GraphQLList(ComputerType)
-            },
-            phone: {
-                type: new gql.GraphQLList(PhoneType)
-            }
-        };
-    }
-});
-
-const ComputerType = new gql.GraphQLObjectType({
-    name: 'ComputerType',
-    fields() {
-        return {
-            SN: {
-                type: gql.GraphQLString
-            },
-            initial_date: {
-                type: gql.GraphQLString
-            }
-        };
-    }
-});
-
-const RolesType = new gql.GraphQLObjectType({
-    name: 'RolesType',
-    fields() {
-        return {
-            title: {
-                type: gql.GraphQLString
-            },
-            start_date: {
-                type: gql.GraphQLString
-            }
-        };
-    }
-});
-
-const PhoneType = new gql.GraphQLObjectType({
-    name: 'PhoneType',
-    fields() {
-        return {
-            IMEI_number: {
-                type: gql.GraphQLString
-            },
-            SN: {
-                type: gql.GraphQLString
-            },
-            initial_date: {
-                type: gql.GraphQLString
-            },
-            end_date: {
-                type: gql.GraphQLString
-            }
-        };
-    }
-});
-
 hrtype = new gql.GraphQLObjectType({
     name: 'person',
     fields() {
