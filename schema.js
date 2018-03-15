@@ -6,7 +6,7 @@ const db = require('@arangodb').db;
 
 const hrSystem = db._collection('HRSystem');
 
-let hrtype, personInterface;
+let hrtype;
 
 const queryHRType = new gql.GraphQLObjectType({
     name: 'Query',
@@ -30,33 +30,95 @@ const queryHRType = new gql.GraphQLObjectType({
     }
 });
 
+const DevicesType = new gql.GraphQLObjectType({
+    name: 'DevicesType',
+    fields() {
+        return {
+            computer: {
+                type: new gql.GraphQLList(ComputerType)
+            },
+            phone: {
+                type: new gql.GraphQLList(PhoneType)
+            }
+        };
+    }
+});
+
+const ComputerType = new gql.GraphQLObjectType({
+    name: 'ComputerType',
+    fields() {
+        return {
+            SN: {
+                type: gql.GraphQLString
+            },
+            initial_date: {
+                type: gql.GraphQLString
+            }
+        };
+    }
+});
+
+const RolesType = new gql.GraphQLObjectType({
+    name: 'RolesType',
+    fields() {
+        return {
+            title: {
+                type: gql.GraphQLString
+            },
+            start_date: {
+                type: gql.GraphQLString
+            }
+        };
+    }
+});
+
+const PhoneType = new gql.GraphQLObjectType({
+    name: 'PhoneType',
+    fields() {
+        return {
+            IMEI_number: {
+                type: gql.GraphQLString
+            },
+            SN: {
+                type: gql.GraphQLString
+            },
+            initial_date: {
+                type: gql.GraphQLString
+            },
+            end_date: {
+                type: gql.GraphQLString
+            }
+        };
+    }
+});
+
 hrtype = new gql.GraphQLObjectType({
     name: 'person',
-    description: 'A humanoid creature in the Star Wars universe.',
     fields() {
         return {
             id: {
                 type: new gql.GraphQLNonNull(gql.GraphQLString),
-                description: 'The id of the human.',
                 resolve(hrSystem) {
                     return hrSystem._key;
                 }
             },
             name: {
                 type: gql.GraphQLString,
-                description: 'The name of the human.'
             },
             surname: {
                 type: gql.GraphQLString,
-                description: 'The home planet of the human, or null if unknown.'
             },
             department: {
                 type: gql.GraphQLString,
-                description: 'The name of the human.'
             },
             official_mail: {
                 type: gql.GraphQLString,
-                description: 'The home planet of the human, or null if unknown.'
+            },
+            devices: {
+                type: DevicesType,
+            },
+            roles: {
+                type: new gql.GraphQLList(RolesType)
             }
         };
     }
